@@ -164,6 +164,8 @@
         let file = info[0];
         let title = info[1];
         let desc = info[2];
+
+        window.history.pushState("", "", "/kek/" + String(title))
         
         ads.remove();
 
