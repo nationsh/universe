@@ -49,7 +49,7 @@
                                   <table border="1" cellspacing="0" cellpadding="10" bordercolor="#FF0000" id="table2311" width="100%">
                                     <tbody>
                                       <tr>
-                                        <td>
+                                        <td id="videocontent">
                                           <p align="center">
                                             <a href="#videos">
                                               <b>
@@ -68,10 +68,10 @@
                         </table>
                         <table border="0" width="70" cellspacing="0" cellpadding="5" id="table2222">
                           <tbody>
-                            <tr>
+                            <tr id="videoinfo">
                               <td>
                                 <p align="left">
-                                  <a>
+                                  <a onclick="playVideo('news.mp4@news.mp4@Elon Musk likes the news! Media! X! The Media!')">
                                     <img border="0" src="/images/news.mp4.png" width="62" height="62">
                                   </a>
                                 </p>
@@ -90,12 +90,12 @@
                   </tbody>
                 </table>
               </td>
-              <td rowspan="3" bgcolor="#000000" width="300" valign="top">
-                <table border="0" width="100%" cellspacing="0" cellpadding="10" id="table1221">
+              <td rowspan="3" bgcolor="#000000" width="300" valign="top" id="adsection">
+                <table border="0" width="100%" cellspacing="0" cellpadding="10">
                   <tbody>
                     <tr>
                       <td>
-                        <table border="0" width="100%" cellspacing="0" cellpadding="7" id="table1222">
+                        <table border="0" width="100%" cellspacing="0" cellpadding="7">
                           <tbody>
                             <tr>
                               <td colspan="2">
@@ -136,5 +136,31 @@
         </table>
       </div>
     </center>
+
+    <script>
+      const ads = document.getElementById("adsection");
+      const videoContent = document.getElementById("videocontent");
+      const videoInfo = document.getElementById("videoinfo");
+      
+      function playVideo(info) {
+        let info = info.split("@");
+        let file = info[0];
+        let title = info[1];
+        let desc = info[2];
+        
+        ads.remove();
+
+        videoContent.innerHTML = `<video style="width: 100%;" autoplay loop>
+          <source src="/videos/${file}">
+        </video>`
+
+        videoInfo.innerHTML = `<td>
+          <a>
+            <p align="left" style="color: white; width: 500px; margin: 20px -5px; font-size: 25px; line-height: 0;">${title}</p>
+            <p align="left" style="color: grey; width: 500px; line-height: 0; margin: -5px -5px; font-size: 17px; line-height: 15px;">${desc}</p>
+          </a>
+        </td>`
+      }
+    </script>
   </body>
 </html>
