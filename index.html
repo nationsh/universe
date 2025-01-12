@@ -138,10 +138,10 @@
                                     <tbody>
                                       <tr>
                                         <td id="videocontent">
-                                          <p align="center" id="playPauseBtn">
-                                            <a href="#videos" id="video">
-                                              <b id="progressBar">
-                                                <font face="Arial" size="6" id="volumeControl">Videos</font>
+                                          <p align="center">
+                                            <a href="#videos">
+                                              <b>
+                                                <font face="Arial" size="6">Videos</font>
                                               </b>
                                             </a>
                                           </p>
@@ -256,40 +256,10 @@
             <p align="left" style="color: white; width: 500px; margin: 20px -5px; font-size: 25px; line-height: 0;">${title}</p>
             <p align="left" style="color: grey; width: 500px; line-height: 0; margin: -5px -5px; font-size: 17px; line-height: 15px;">${desc}</p>
           </a>
-        </td>`
+        </td>
+        
+        <script src="/controls.js"></script>`
       }
-    </script>
-
-    <script>
-      const video = document.getElementById("video");
-      const playPauseBtn = document.getElementById("playPauseBtn");
-      const progressBar = document.getElementById("progressBar");
-      const volumeControl = document.getElementById("volumeControl");
-      
-      playPauseBtn.addEventListener("click", () => {
-        if (video.paused) {
-          video.play();
-          playPauseBtn.textContent = "⏸";
-        } else {
-          video.pause();
-          playPauseBtn.textContent = "▶";
-        }
-      });
-      
-      video.addEventListener("timeupdate", () => {
-        const progress = (video.currentTime / video.duration) * 100;
-        progressBar.value = progress;
-        console.log(`${Math.round(video.currentTime)}/${Math.round(video.duration)}`);
-      });
-      
-      progressBar.addEventListener("input", () => {
-        const newTime = (progressBar.value / 100) * video.duration;
-        video.currentTime = newTime;
-      });
-      
-      volumeControl.addEventListener("input", () => {
-        video.volume = volumeControl.value / 100;
-      });
     </script>
   </body>
 </html>
