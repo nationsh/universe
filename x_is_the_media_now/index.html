@@ -57,13 +57,8 @@
         const elonMat = new THREE.MeshBasicMaterial({map: elonTex});
 
         const elon = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), elonMat);
-        const elon2 = new THREE.Mesh(new THREE.PlaneGeometry(15, 10), elonMat);
         
         scene.add(elon);
-        scene.add(elon2);
-        
-        elon2.position.y = 5;
-        elon2.position.z = -2;
 
         const skyboxGeo = new THREE.BoxGeometry(500, 500, 500);
         const skyboxMat = new THREE.MeshBasicMaterial({ 
@@ -107,6 +102,26 @@
         
         onresize();
         animate();
+    </script>
+
+    <script>
+        let z = -3
+
+        function lol() {
+            z = z + 0.05
+            
+            if (z <= 0) {
+                elon.position.z = z
+            } else {
+                z = z - 5
+            }
+        
+            setTimeout(function() {
+                lol()
+            }, 1)
+        }
+        
+        lol()
     </script>
 </body>
 </html>
