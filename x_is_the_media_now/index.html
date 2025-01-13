@@ -103,25 +103,5 @@
         onresize();
         animate();
     </script>
-
-    <script>
-        let z = -3
-
-        function lol() {
-            z = z + 0.05
-            
-            if (z <= 0) {
-                elon.position.z = z
-            } else {
-                z = z - 5
-            }
-        
-            setTimeout(function() {
-                lol()
-            }, 1)
-        }
-        
-        lol()
-    </script>
 </body>
 </html>
