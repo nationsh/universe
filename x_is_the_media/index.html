@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X Is The Media Now</title>
+    <style>
+        body {
+          margin: 0;
+          overflow: hidden;
+        }
+        canvas {
+          display: block;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(115, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const redLight = new THREE.PointLight(0xff0000, 1, 100);
+        redLight.position.set(5, 1, 5);
+        scene.add(redLight);
+
+        const textureLoader = new THREE.TextureLoader();
+        const wallTex = textureLoader.load("/images/pepe.png");
+        const elonTex = textureLoader.load("/images/elon.png");
+
+        const wallMat = new THREE.MeshBasicMaterial({map: wallTex});
+        const elonMat = new THREE.MeshBasicMaterial({map: elonTex});
+
+        const elon = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), elonMat);
+        scene.add(elon);
+
+        const skyboxGeo = new THREE.BoxGeometry(500, 500, 500);
+        const skyboxMat = new THREE.MeshBasicMaterial({ 
+          map: wallTex, 
+          side: THREE.BackSide
+        });
+        const skybox = new THREE.Mesh(skyboxGeo, skyboxMat);
+        scene.add(skybox);
+      
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener("mousemove", (event) => {
+          mouseX = event.clientX / window.innerWidth - 0.5;
+          mouseY = event.clientY / window.innerHeight - 0.5;
+        });
+
+        const controls = {
+          forward: false,
+          backward: false,
+          left: false,
+          right: false
+        };
+      
+        function animate() {
+          requestAnimationFrame(animate);
+          camera.rotation.x = mouseY * 2;
+          camera.rotation.y = mouseX * 2;
+          renderer.render(scene, camera);
+        }
+
+        function onresize() {
+          const width = window.innerWidth;
+          const height = window.innerHeight;
+        
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+        
+          renderer.setSize(width, height);
+        }
+
+        const listener = new THREE.AudioListener();
+        camera.add(listener);
+        
+        const sound = new THREE.Audio(listener);
+        
+        const audioLoader = new THREE.AudioLoader();
+        audioLoader.load("/audio/ambience.mp3", function (buffer) {
+            sound.setBuffer(buffer);
+            sound.setVolume(0.5);
+            sound.play();
+        });
+        
+        sound.setLoop(true);
+        window.addEventListener("resize", onresize, false);
+        
+        onresize();
+        animate();
+    </script>
+</body>
+</html>
