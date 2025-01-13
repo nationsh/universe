@@ -24,12 +24,10 @@
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(115, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer();
+
+        camera.position.z = 5;
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
-
-        const redLight = new THREE.PointLight(0xff0000, 1, 100);
-        redLight.position.set(5, 1, 5);
-        scene.add(redLight);
 
         const textureLoader = new THREE.TextureLoader();
         const wallTex = textureLoader.load("/images/pepe.jpg");
@@ -39,7 +37,13 @@
         const elonMat = new THREE.MeshBasicMaterial({map: elonTex});
 
         const elon = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), elonMat);
+        const elon2 = new THREE.Mesh(new THREE.PlaneGeometry(15, 10), elonMat);
+        
         scene.add(elon);
+        elon2.add(a);
+        
+        elon2.position.y = 5;
+        elon2.position.z = -2;
 
         const skyboxGeo = new THREE.BoxGeometry(500, 500, 500);
         const skyboxMat = new THREE.MeshBasicMaterial({ 
