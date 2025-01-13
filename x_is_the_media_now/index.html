@@ -16,7 +16,11 @@
 </head>
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <audio id="ambience">
+        <source src="/audio/ambience.mp3" type="audio/mp3" loop autoplay>
+    </audio>
     <script>
+        const ambience = document.getElementById("ambience");
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(115, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer();
@@ -51,13 +55,6 @@
           mouseX = event.clientX / window.innerWidth - 0.5;
           mouseY = event.clientY / window.innerHeight - 0.5;
         });
-
-        const controls = {
-          forward: false,
-          backward: false,
-          left: false,
-          right: false
-        };
       
         function animate() {
           requestAnimationFrame(animate);
@@ -79,17 +76,10 @@
         const listener = new THREE.AudioListener();
         camera.add(listener);
         
-        const sound = new THREE.Audio(listener);
-        
-        const audioLoader = new THREE.AudioLoader();
-        audioLoader.load("/audio/ambience.mp3", function (buffer) {
-            sound.setBuffer(buffer);
-            sound.setVolume(0.5);
-            sound.play();
-        });
-        
-        sound.setLoop(true);
         window.addEventListener("resize", onresize, false);
+        document.addEventListener("click", function() {
+            ambience.play();
+        }, false);
         
         onresize();
         animate();
