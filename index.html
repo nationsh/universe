@@ -41,13 +41,16 @@
         cursor: pointer;
       }
 
-      @font-face {
-          font-family: XChirp;
-          src: url(https://abs.twimg.com/fonts/v1/chirp-extended-heavy-web.woff2) format('woff2'), url(https://abs.twimg.com/fonts/v1/chirp-extended-heavy-web.woff) format('woff');
-          font-weight: 800;
-          font-style: 'normal';
-          font-display: 'swap';
-        }
+      #recentPosts {
+        width: 100%;
+        height: 400px;
+        display: relative;
+        overflow: auto;
+      }
+
+      #recentPosts::-webkit-scrollbar {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -212,7 +215,8 @@
                             </tr>
                           </tbody>
                         </table>
-<table border="0" cellspacing="10" cellpadding="5" id="table2222" width="100%">
+<div id="recentPosts">
+<table border="0" cellspacing="10" cellpadding="5" id="table2222" width="100%; border-collapse: collapse;">
                           <tbody>
                             
 <tr bgcolor="white">
@@ -275,8 +279,10 @@ Also The Left: Men Can Get Pregnant</p>
                                 </a>
                               </td>
                             </tr>
+
                           </tbody>
                         </table>
+</div>
                         
                         
                       </td>
@@ -363,6 +369,7 @@ Also The Left: Men Can Get Pregnant</p>
       }
     </script>
   
+
 
 
 </body></html>
