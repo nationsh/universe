@@ -224,7 +224,7 @@
 
         function endGame() {
             gameOver = true;
-            finalScoreElement.textContent = score;
+            finalScoreEm.textContent = score;
 	    if (highScore < score) {
 		localStorage.setItem("highScore", Number(score));
 	    };
