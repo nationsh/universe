@@ -103,7 +103,7 @@
         let spawnTimer = 0;
 
         function spawnObject() {
-            const isGood = Math.random() < 0.7;
+            const isGood = Math.random() < 0.6;
             let obj;
             if (isGood) {
                 obj = {
@@ -222,7 +222,7 @@
             gameOver = true;
             finalScoreEm.textContent = score;
             deathScreen.style.display = "block";
-	          elonBg.style.display = "block";
+	    elonBg.style.display = "block";
         }
 
         function resetGame() {
@@ -232,7 +232,7 @@
             objects.length = 0;
             gameOver = false;
             deathScreen.style.display = "none";
-	          elonBg.style.display = "none";
+	    elonBg.style.display = "none";
         }
 
         window.restartGame = function() {
