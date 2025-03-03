@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Woke Jumper</title>
+    <style>
+	body {
+	    margin: 0;
+	}
+        #gameCanvas {
+            background: url(https://static.vecteezy.com/system/resources/previews/003/692/649/large_2x/beautiful-clear-blue-sky-in-summer-look-lke-heaven-free-photo.jpg);
+	    background-size: 100% 100%;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+        }
+	#totalScore {
+            position: absolute;
+            top: 30px;
+            left: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+        }
+        #gameOver {
+            font-family: Arial, sans-serif;
+            font-size: 30px;
+            display: none;
+        }
+    	@keyframes rotate {
+  	    0, 100% { transform: rotateX(0deg) rotateY(0deg); }
+  	    25% { transform: rotateX(10deg) rotateY(10deg); }
+            50% { transform: rotateX(-20deg) rotateY(-20deg); }
+            75% { transform: rotateX(20deg) rotateY(20deg); }
+	}
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <div id="score">Liberals Jumped Over: 0</div>
+    <div id="totalScore">Total Liberals Jumped Over: 0</div>
+    <div id="gameOver" style="width: 800px; height: 400px; position: absolute; top: 0; align-items: center; justify-content: center; text-align: center;">
+	<br>
+	<br>
+	<p>Woke Virus Took Over!<br><p style="animation: rotate 1s ease-in-out infinite;">Press Space To Play Again!</p>
+	<br>
+	<a style="padding: 15px; border: 3px black inset; background-color: white; font-size: 20px;">DOGECOIN TO THE MOON 🚀🚀</a></p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const scoreElement = document.getElementById("score");
+	const totalScoreElement = document.getElementById("totalScore");
+        const gameOverElement = document.getElementById("gameOver");
+
+        const lonImg = new Image();
+        lonImg.src = "https://cdn.discordapp.com/attachments/1078126193125097504/1345926249134166100/image.png?ex=67c652ff&is=67c5017f&hm=0bfa8476a1ad0939eb2854b3af83b026487dd6066f82225d4cc1de8868cecf58&";
+        const liberalImg = new Image();
+        liberalImg.src = "https://cdn.discordapp.com/attachments/1078126193125097504/1345927837156380682/image.png?ex=67c6547a&is=67c502fa&hm=1bbba06a854daefb49b31b04b54153f1e5984c25d25b08d953e1c19ff3f6da72&";
+
+        const lon = {
+            x: 50,
+            y: 300,
+            width: 60,
+            height: 60,
+            dy: 50,
+            gravity: 0.2,
+            jumpPower: -7,
+            isJumping: false
+        };
+
+        let cacti = [];
+        let score = 0;
+	let totalScore = Number(localStorage.getItem("totalLiberalScore"));
+        let gameRunning = true;
+
+        const groundY = 340;
+        const minliberalGap = 300;
+
+        document.addEventListener("keydown", (e) => {
+            if (e.code === "Space") {
+                if (!gameRunning) {
+                    resetGame();
+                } else if (!lon.isJumping) {
+                    lon.dy = lon.jumpPower;
+                    lon.isJumping = true;
+                }
+            }
+        });
+
+        function spawnliberal() {
+            const lastliberal = cacti[cacti.length - 1];
+            if (lastliberal && (canvas.width - lastliberal.x) < minliberalGap) {
+                return;
+            }
+
+            const liberal = {
+                x: canvas.width,
+                y: groundY - 50,
+                width: 30,
+                height: 50,
+                speed: 4
+            };
+            cacti.push(liberal);
+        }
+
+        function checkCollision(lon, liberal) {
+            return (lon.x < liberal.x + liberal.width &&
+                    lon.x + lon.width > liberal.x &&
+                    lon.y < liberal.y + liberal.height &&
+                    lon.y + lon.height > liberal.y);
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (gameRunning) {
+                lon.dy += lon.gravity;
+                lon.y += lon.dy;
+                
+                if (lon.y > groundY - lon.height) {
+                    lon.y = groundY - lon.height;
+                    lon.dy = 0;
+                    lon.isJumping = false;
+                }
+
+                ctx.fillStyle = "#267F00";
+                ctx.fillRect(0, groundY, canvas.width, 60);
+
+                ctx.drawImage(lonImg, lon.x, lon.y, lon.width, lon.height);
+
+                cacti.forEach((liberal, index) => {
+                    liberal.x -= liberal.speed;
+                    
+                    ctx.drawImage(liberalImg, liberal.x, liberal.y, liberal.width, liberal.height);
+
+                    if (checkCollision(lon, liberal)) {
+                        gameRunning = false;
+                        gameOverElement.style.display = "block";
+                    }
+
+                    if (liberal.x + liberal.width < 0) {
+                        cacti.splice(index, 1);
+                        score += 1;
+			localStorage.setItem("totalLiberalScore", totalScore += 1);
+                    }
+                });
+
+                scoreElement.textContent = `Liberals Jumped Over: ${score}`;
+		totalScoreElement.textContent = `Total Liberals Jumped Over: ${totalScore}`;
+
+                if (Math.random() < 0.005) {
+                    spawnliberal();
+                }
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function resetGame() {
+            lon.y = groundY - lon.height;
+            lon.dy = 0;
+            lon.isJumping = false;
+            cacti = [];
+            score = 0;
+            gameRunning = true;
+            gameOverElement.style.display = "none";
+        }
+
+        let imagesLoaded = 0;
+        function imageLoaded() {
+            imagesLoaded++;
+            if (imagesLoaded === 2) {
+                gameLoop();
+            }
+        }
+        lonImg.onload = imageLoaded;
+        liberalImg.onload = imageLoaded;
+        lonImg.onerror = () => console.error("Failed to load elon image");
+        liberalImg.onerror = () => console.error("Failed to load liberal image");
+    </script>
+</body>
+</html>
