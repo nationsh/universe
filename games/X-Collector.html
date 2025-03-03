@@ -71,6 +71,7 @@
         let score = 0;
         let lives = 3;
         let difficulty = 1;
+	let highScore = Number(localStorage.getItem("highScore"));
         let mouseX = canvas.width / 2;
         let gameOver = false;
 
@@ -199,6 +200,9 @@
                 ctx.fillText(`Score: ${score}`, 10, 40);
                 ctx.fillText(`Lives: ${lives}`, 10, 80);
                 ctx.fillText(`Difficulty: ${difficulty}`, 10, 120);
+		ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+		ctx.font = "bold 20px Arial";
+		ctx.fillText(`High Score: ${highScore}`, 10, 585);
             }
         }
 
@@ -220,7 +224,10 @@
 
         function endGame() {
             gameOver = true;
-            finalScoreEm.textContent = score;
+            finalScoreElement.textContent = score;
+	    if (highScore < score) {
+		localStorage.setItem("highScore", Number(score));
+	    };
             deathScreen.style.display = "block";
 	    elonBg.style.display = "block";
         }
@@ -229,6 +236,7 @@
             score = 0;
             lives = 3;
             difficulty = 1;
+	    highScore = Number(localStorage.getItem("highScore"));
             objects.length = 0;
             gameOver = false;
             deathScreen.style.display = "none";
