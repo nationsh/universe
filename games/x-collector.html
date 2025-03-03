@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>X Collector</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="THE EL0N MU5K UNIVERSE">
+    <meta name="description" content="THE EL0N MU5K UNIVERSE">
+    <meta property="og:title" content="MUSK UNIVERSE">
+    <meta property="og:url" content="https://www.elonmuskuniverse.com">
+    <meta property="og:image" content="https://www.elonmuskuniverse.com/favicon.ico">
+    <meta property="twitter:image" content="https://www.elonmuskuniverse.com/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        canvas {
+            background: black;
+        }
+        body {
+            margin: 0;
+            background-color: #131B29;
+        }
+        #deathScreen {
+            position: absolute;
+            display: none;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+      	#musk {
+      	    display: flex;
+      	    justify-content: center;
+      	    align-items: center;
+                  margin-top: 30px;
+      	}
+      	#elonBg {
+      	    position: absolute;
+      	    opacity: 20%;
+      	    animation: rotate 3s ease-in-out infinite;
+      	    display: none;
+      	}
+      	p {
+      	    pointer-events: none;
+      	}
+      	@keyframes rotate {
+        	    0, 100% { transform: rotateX(-90deg) rotateY(-150deg); }
+        	    50% { transform: rotateX(360deg) rotateY(-130deg); }
+      	}
+    </style>
+</head>
+<body>
+    <div id="header" style="width: 100%; display: flex; justify-content: center; background-color: #1D3752;">
+    	<a href="/"><img src="/images/universeBanner.png" style="width: 960px;"></a>
+    </div>
+    <div id="musk">
+	<canvas id="gameCanvas" width="800" height="600"></canvas>
+	<img id="elonBg" src="/favicon.ico" width="400">
+    	<div id="deathScreen">
+        	<p style="font-size: 30px; font-weight: bold; margin: 0;">GAME OVER</p>
+        	<p style="font-size: 30px; font-weight: bold; margin: 20px;">Final Score: <span id="finalScore">0</span></p>
+        	<button onclick="restartGame()" style="font-size: 20px; padding: 10px 20px; cursor: pointer;">Play Again</button>
+    	</div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const deathScreen = document.getElementById("deathScreen");
+	      const elonBg = document.getElementById("elonBg");
+        const finalScoreEm = document.getElementById("finalScore");
+
+        let score = 0;
+        let lives = 3;
+        let difficulty = 1;
+        let mouseX = canvas.width / 2;
+        let gameOver = false;
+
+        const playerImg = new Image();
+        const heartImg = new Image();
+      
+        playerImg.src = "https://x.com/favicon.ico";
+        heartImg.src = "https://abs-0.twimg.com/emoji/v2/svg/2764.svg";
+
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height - 50,
+            width: 40,
+            height: 40,
+            speed: 5
+        };
+
+        const objects = [];
+        const objectTypes = {
+            good: { color: "#000000", points: 10 },
+            bad: [
+                { text: "Fuck you", color: "white" },
+                { text: "Woke!", color: "white" },
+                { text: "Retard!", color: "white" },
+                { text: "Liberal!", color: "white" }
+            ]
+        };
+
+        let lastTime = 0;
+        let spawnTimer = 0;
+
+        function spawnObject() {
+            const isGood = Math.random() < 0.6;
+            let obj;
+            if (isGood) {
+                obj = {
+                    x: Math.random() * (canvas.width - 50),
+                    y: -20,
+                    speed: 2,
+                    color: objectTypes.good.color,
+                    isGood: true,
+                    width: 30,
+                    height: 30
+                };
+            } else {
+                const badType = objectTypes.bad[Math.floor(Math.random() * objectTypes.bad.length)];
+                obj = {
+                    x: Math.random() * (canvas.width - 50),
+                    y: -20,
+                    speed: 3,
+                    text: badType.text,
+                    color: badType.color,
+                    isGood: false,
+                    width: 30,
+                    height: 20
+                };
+            }
+            objects.push(obj);
+        }
+
+        function update(deltaTime) {
+            if (gameOver) return;
+
+            spawnTimer += deltaTime;
+            if (spawnTimer > 0.8 / difficulty) {
+                spawnObject();
+                spawnTimer = 0;
+            }
+
+            for (let i = objects.length - 1; i >= 0; i--) {
+                objects[i].y += objects[i].speed;
+
+                if (checkCollision(player, objects[i])) {
+                    if (objects[i].isGood) {
+                        score += objectTypes.good.points;
+                        difficulty += 2;
+                    } else {
+                        lives--;
+                        if (lives <= 0) {
+                            endGame();
+                        }
+                    }
+                    objects.splice(i, 1);
+                    continue;
+                }
+
+                if (objects[i].y > canvas.height) {
+                    objects.splice(i, 1);
+                }
+            }
+        }
+
+        function checkCollision(player, obj) {
+            return player.x < obj.x + obj.width && player.x + player.width > obj.x && player.y < obj.y + obj.height && player.y + player.height > obj.y;
+        }
+
+        function draw() {
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (!gameOver) {
+                if (playerImg.complete && playerImg.naturalWidth !== 0) {
+                    ctx.drawImage(playerImg, player.x, player.y -50, player.width*2, player.height*2);
+                } else {
+                    ctx.fillStyle = "white";
+                    ctx.fillRect(player.x, player.y, player.width, player.height);
+                }
+
+                objects.forEach(obj => {
+                    if (obj.isGood) {
+                        if (heartImg.complete && heartImg.naturalWidth !== 0) {
+                            ctx.drawImage(heartImg, obj.x, obj.y, obj.width, obj.height);
+                        } else {
+                            ctx.fillStyle = obj.color;
+                            ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+                        }
+                    } else {
+                        ctx.fillStyle = obj.color;
+                        ctx.font = "20px Arial";
+                        ctx.fillText(obj.text, obj.x, obj.y + 20);
+                    }
+                });
+
+                ctx.fillStyle = "white";
+                ctx.font = "bold 30px Arial";
+                ctx.fillText(`Score: ${score}`, 10, 40);
+                ctx.fillText(`Lives: ${lives}`, 10, 80);
+                ctx.fillText(`Difficulty: ${difficulty}`, 10, 120);
+            }
+        }
+
+        function gameLoop(timestamp) {
+            const deltaTime = (timestamp - lastTime) / 1000;
+            lastTime = timestamp;
+
+            if (!gameOver) {
+                player.x = mouseX - player.width/2;
+                if (player.x < 0) player.x = 0;
+                if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+
+                update(deltaTime);
+            }
+            
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function endGame() {
+            gameOver = true;
+            finalScoreEm.textContent = score;
+            deathScreen.style.display = "block";
+	          elonBg.style.display = "block";
+        }
+
+        function resetGame() {
+            score = 0;
+            lives = 3;
+            difficulty = 1;
+            objects.length = 0;
+            gameOver = false;
+            deathScreen.style.display = "none";
+	          elonBg.style.display = "none";
+        }
+
+        window.restartGame = function() {
+            resetGame();
+        }
+
+        canvas.addEventListener("mousemove", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+        });
+
+        let imagesLoaded = 0;
+        function checkImagesLoaded() {
+            imagesLoaded++;
+            if (imagesLoaded === 2) {
+                lastTime = performance.now();
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        playerImg.onload = checkImagesLoaded;
+        heartImg.onload = checkImagesLoaded;
+        playerImg.onerror = checkImagesLoaded;
+        heartImg.onerror = checkImagesLoaded;
+    </script>
+</body>
+</html>
