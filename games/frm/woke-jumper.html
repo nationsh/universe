@@ -3,12 +3,12 @@
 <head>
     <title>Woke Jumper</title>
     <style>
-	body {
-	    margin: 0;
-	}
+        body {
+            margin: 0;
+        }
         #gameCanvas {
             background: url(https://static.vecteezy.com/system/resources/previews/003/692/649/large_2x/beautiful-clear-blue-sky-in-summer-look-lke-heaven-free-photo.jpg);
-	    background-size: 100% 100%;
+            background-size: 100% 100%;
         }
         #score {
             position: absolute;
@@ -17,7 +17,7 @@
             font-family: Arial, sans-serif;
             font-size: 20px;
         }
-	#totalScore {
+        #totalScore {
             position: absolute;
             top: 30px;
             left: 10px;
@@ -29,12 +29,12 @@
             font-size: 30px;
             display: none;
         }
-    	@keyframes rotate {
-  	    0, 100% { transform: rotateX(0deg) rotateY(0deg); }
-  	    25% { transform: rotateX(10deg) rotateY(10deg); }
+        @keyframes rotate {
+            0, 100% { transform: rotateX(0deg) rotateY(0deg); }
+            25% { transform: rotateX(10deg) rotateY(10deg); }
             50% { transform: rotateX(-20deg) rotateY(-20deg); }
             75% { transform: rotateX(20deg) rotateY(20deg); }
-	}
+        }
     </style>
 </head>
 <body>
@@ -42,22 +42,25 @@
     <div id="score">Liberals Jumped Over: 0</div>
     <div id="totalScore">Total Liberals Jumped Over: 0</div>
     <div id="gameOver" style="width: 800px; height: 400px; position: absolute; top: 0; align-items: center; justify-content: center; text-align: center;">
-	<br>
-	<br>
-	<p>Woke Virus Took Over!<br><p style="animation: rotate 1s ease-in-out infinite;">Press Space To Play Again!</p>
-	<br>
-	<a style="padding: 15px; border: 3px black inset; background-color: white; font-size: 20px;">DOGECOIN TO THE MOON 🚀🚀</a></p>
+        <br>
+        <br>
+        <p>Woke Virus Took Over!<br><p style="animation: rotate 1s ease-in-out infinite;">Press Space To Play Again!</p>
+        <br>
+        <a style="padding: 15px; border: 3px black inset; background-color: white; font-size: 20px;">DOGECOIN TO THE MOON 🚀🚀</a></p>
     </div>
 
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
         const scoreElement = document.getElementById("score");
-	const totalScoreElement = document.getElementById("totalScore");
+        const totalScoreElement = document.getElementById("totalScore");
         const gameOverElement = document.getElementById("gameOver");
 
+        // Load the animated GIF as an image
         const lonImg = new Image();
         lonImg.src = "https://media.discordapp.net/attachments/1252718272701272129/1347733037361791070/ezgif.com-animated-gif-maker.gif?ex=67cce5b3&is=67cb9433&hm=6b64d7e455be3826a135e7c29c89a087560dc1afef26f9281bee19894bae7658&=";
+
+        // Load static image for the liberals
         const liberalImg = new Image();
         liberalImg.src = "/images/liberal.png";
 
@@ -74,7 +77,7 @@
 
         let cacti = [];
         let score = 0;
-	let totalScore = Number(localStorage.getItem("totalLiberalScore"));
+        let totalScore = Number(localStorage.getItem("totalLiberalScore"));
         let gameRunning = true;
 
         const groundY = 340;
@@ -114,13 +117,19 @@
                     lon.y + lon.height > liberal.y);
         }
 
+        // Function to draw the GIF onto the canvas and update the texture
+        let lonImgFrame = 0;
+        const lonImgFrames = 4;  // Assuming 4 frames for the GIF
+        const lonImgWidth = 60;   // Width of the lon character in the GIF
+        const lonImgHeight = 60;  // Height of the lon character in the GIF
+
         function gameLoop() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (gameRunning) {
                 lon.dy += lon.gravity;
                 lon.y += lon.dy;
-                
+
                 if (lon.y > groundY - lon.height) {
                     lon.y = groundY - lon.height;
                     lon.dy = 0;
@@ -130,11 +139,20 @@
                 ctx.fillStyle = "#267F00";
                 ctx.fillRect(0, groundY, canvas.width, 60);
 
-                ctx.drawImage(lonImg, lon.x, lon.y, lon.width, lon.height);
+                // Draw the current frame of the animated GIF
+                ctx.drawImage(
+                    lonImg,
+                    lonImgFrame * lonImgWidth, 0, // X offset of the current frame in the GIF
+                    lonImgWidth, lonImgHeight, // Width and height of the frame
+                    lon.x, lon.y, lon.width, lon.height
+                );
+
+                // Move to the next frame of the GIF
+                lonImgFrame = (lonImgFrame + 1) % lonImgFrames;
 
                 cacti.forEach((liberal, index) => {
                     liberal.x -= liberal.speed;
-                    
+
                     ctx.drawImage(liberalImg, liberal.x, liberal.y, liberal.width, liberal.height);
 
                     if (checkCollision(lon, liberal)) {
@@ -145,12 +163,12 @@
                     if (liberal.x + liberal.width < 0) {
                         cacti.splice(index, 1);
                         score += 1;
-			localStorage.setItem("totalLiberalScore", totalScore += 1);
+                        localStorage.setItem("totalLiberalScore", totalScore += 1);
                     }
                 });
 
                 scoreElement.textContent = `Liberals Jumped Over: ${score}`;
-		totalScoreElement.textContent = `Total Liberals Jumped Over: ${totalScore}`;
+                totalScoreElement.textContent = `Total Liberals Jumped Over: ${totalScore}`;
 
                 if (Math.random() < 0.005) {
                     spawnliberal();
@@ -179,7 +197,7 @@
         }
         lonImg.onload = imageLoaded;
         liberalImg.onload = imageLoaded;
-        lonImg.onerror = () => console.error("Failed to load elon image");
+        lonImg.onerror = () => console.error("Failed to load lon image");
         liberalImg.onerror = () => console.error("Failed to load liberal image");
     </script>
 </body>
